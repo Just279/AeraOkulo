@@ -1,22 +1,22 @@
 # VZoR
  Веб-сервис для мониторинга воздушного пространства
-Создан исключительно для систем под архитектурой linux (Ubuntu, Kali linux, Debian)
+Создан исключительно для систем под архитектурой linux **(Ubuntu, Kali linux, Debian)**
 
 Воспользоваться этим репозиторием в случае, если Docker образ не заработает.
 
 1. Необходимо в командной строке linux установить следующее:
 
-[apt install ffmpeg] 
+**apt install ffmpeg**
 
-[pip install ultralytics Django Pillow numpy opencv-python]
+**pip install ultralytics Django Pillow numpy opencv-python**
 
 2. Далее прописать следующие команды в папке с веб-сервисом:
 
-python manage.py makemigrations 
+**python manage.py makemigrations** 
 
-python manage.py migrate 
+**python manage.py migrate** 
 
-python manage.py runserver 127.0.0.1:80 
+**python manage.py runserver 127.0.0.1:80** 
 
 
 
