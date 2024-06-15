@@ -1,0 +1,325 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VZoR</title>
+    <link rel="stylesheet" href="{% static 'apply/style_real_fa5.css' %}">
+    <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    
+    <style>
+        #loadingSpinner,#loadingSpinner2  {
+            display: none;
+            border: 8px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 8px solid #3498db;
+            width: 60px;
+            height: 60px;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            margin-left: -30px;
+            margin-top: -30px;
+        }
+
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
+</head>
+<body>
+{% csrf_token %}
+
+  <a  id="openPopUp" class="text"><b class="bbb">Обработанные фото</b></a>
+
+<div id="notificationSidebar" class="sidebar">
+	
+    <ul class="notif_ul">
+    	<p>Архивы <span id="for_archive_message"> </span></p>
+        {% for arv in arvs %}
+        {% if arv.name is not None %}
+        <li>
+            <span class="notification-title2">{{arv.name}}</span>
+            <p class="notification-text">[{{arv.time}}]</p>
+        </li>
+        {% endif %}
+	{% endfor %}
+    	<p>Фото <span id="for_image_message"> </span></p>
+        {% for fot in fots %}
+        {% if fot.name is not None %}
+        <li>
+            <span class="notification-title">{{fot.name}}</span>
+            <p class="notification-text">[{{fot.time}}]</p>
+        </li>
+        {% endif %}
+	{% endfor %}
+    </ul>
+</div>
+
+
+
+  
+
+      	
+      
+   </div>        
+   <a href="#!" class="closePopUpOutSide"></a>    
+</aside>
+    <img src="{% static 'image/name.png' %}" class="title1">
+    <nav>
+        <ul>
+          <li>
+            <a href="/apliko/">План аэропорта</a>
+          </li>
+          <li>
+            <a href="/fotoanalizo/">Фото анализ</a>
+          </li>
+          <li>
+            <a href="/vidbendoanalizo/">Видео анализ</a>
+          </li>
+          <li>
+            <a href="/logout/">Выход</a>
+          </li>
+        </ul>
+      </nav>
+      <div class="image-container">   
+            <img id="videoPlayer" src="{{leporo}}">
+        </div>
+      </div>
+
+      
+    
+        
+        
+        <div class="notification-bell-container">
+          <div class="notification-bell"><i class="fa fa-bell-o fa-lg"></i>
+              <span class="notification-count">20</span>
+          </div>
+          <div class="notification-dropdown">
+              <ul class="notification-dropdown-ul">
+              {% for mes in mess %}
+              {% if mes.is_new3 is  None%}
+			<li class="text">{{mes.name}}</li>
+		{% endif %}
+		{% endfor %}
+              </ul>
+          </div>
+        </div>
+        
+        <div id="openPopUp2" class="inp_form">
+        <form method="post" enctype="multipart/form-data" id="uploadForm">
+			
+			{{ form.as_p }}
+			<input id="final_input" type="submit" value="Подтвердить">
+		</form>
+		<div id="loadingSpinner"></div>
+		</div>   
+		
+		<div id="openPopUp3" class="inp_form2">
+        <form method="post" enctype="multipart/form-data" id="uploadForm2">
+			<input type="file" name="upload" id="id_upload">
+			<input id="final_input" type="submit" value="Подтвердить">
+		</form>
+		<div id="loadingSpinner2"></div>
+		</div>   
+		
+	
+
+       <a href="/static/sv_imgs/labels/images_d3Qfg32.txt" id="just_a_download_image" download><b class="bbb">Скачать изображение</b></a>
+       <a href="/static/sv_imgs/labels/images_d3Qfg32.txt" id="just_a_download_labels" download><b class="bbb">Скачать метрики</b></a>
+       
+       <a href="/static/sv_imgs/labels/images_d3Qfg32.txt" id="just_a_download_archive" download><b class="bbb">Скачать архив</b></a>
+       <a href="/static/sv_imgs/labels/images_d3Qfg32.txt" id="just_a_download_archive_lbls" download><b class="bbb">Скачать архив с метриками</b></a>
+
+                    
+</body>
+<script src="{% static 'apply/jquery-3.7.1.min.js' %}"></script>
+<script src="{% static 'apply/script_fa.js' %}"></script>
+
+<script>
+        $(document).ready(function(){
+            $('#uploadForm').on('submit', function(event){
+                event.preventDefault();
+
+                var formData = new FormData(this);
+
+                $('#loadingSpinner').show();  // Show the spinner
+                
+                $.ajax({
+                    url: "/fotoanalizo/",
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(data){
+                        $('#loadingSpinner').hide(); 
+                        if(data.status === 'success'){
+                        	st2=$('#for_image_message').html()
+                        	st='<li><span class="notification-title">'+data['new_data'][0]+'</span><p class="notification-text">['+data['new_data'][1]+']</p></li>'
+                        	$('#for_image_message').html(st+st2)
+                        	$('.notification-title').click(
+					function() {
+						const videoPlayer = document.getElementById('videoPlayer');
+						videoPlayer.src='/static/sv_imgs/'+$(this).text();
+						nm=$(this).text()
+						nm=nm.slice(0,nm.indexOf('.'))+'.txt'
+						const just_a_download_labels = document.getElementById('just_a_download_labels');
+						just_a_download_labels.href='/static/sv_imgs/labels/'+nm
+                        			const just_a_download_image = document.getElementById('just_a_download_image');
+						just_a_download_image.href='/static/sv_imgs/'+$(this).text()
+						$('#just_a_download_image').css('display','inline-block')
+						$('#just_a_download_labels').css('display','inline-block')
+					}
+					)
+                        } else {
+                            alert('Error: ' + JSON.stringify(data.errors));
+                        }
+                    },
+                    error: function(xhr, status, error){
+                        $('#loadingSpinner').hide();  // Hide the spinner
+                        alert('An error occurred: ' + error);
+                    }
+                });
+            });
+        });
+    </script>
+    
+    
+<script>
+        $(document).ready(function(){
+            $('#uploadForm2').on('submit', function(event){
+                event.preventDefault();
+
+                var formData = new FormData(this);
+
+                $('#loadingSpinner2').show();  // Show the spinner
+                
+                $.ajax({
+                    url: "/fotoanalizo/leporo/",
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(data){
+                        $('#loadingSpinner2').hide();  // Hide the spinner
+                        if(data.status === 'success'){
+                        	st2=$('#for_archive_message').html()
+                        	st='<li><span class="notification-title2">'+data['new_data'][0]+'</span><p class="notification-text">['+data['new_data'][1]+']</p></li>'
+                        	$('#for_archive_message').html(st+st2)
+                        	$('.notification-title2').click(
+					function() {
+
+						nm=$(this).text()
+						const just_a_download_archive = document.getElementById('just_a_download_archive');
+						just_a_download_archive.href='/static/sv_archive/'+nm+'.zip'
+						const just_a_download_archive_lbls = document.getElementById('just_a_download_archive_lbls');
+						just_a_download_archive_lbls.href='/static/sv_archive/'+nm+'_labels.zip'
+						$('#just_a_download_archive').css('display','inline-block')
+						$('#just_a_download_archive_lbls').css('display','inline-block')
+					}
+					)
+                        } else {
+                            alert('Error: ' + JSON.stringify(data.errors));
+                        }
+                    },
+                    error: function(xhr, status, error){
+                        $('#loadingSpinner2').hide();
+                        alert('An error occurred: ' + error);
+                    }
+                });
+            });
+        });
+    </script>
+
+
+<script>
+$('.notification-title').click(
+function() {
+	const videoPlayer = document.getElementById('videoPlayer');
+	videoPlayer.src='/static/sv_imgs/'+$(this).text();
+	nm=$(this).text()
+	nm=nm.slice(0,nm.indexOf('.'))+'.txt'
+	const just_a_download_labels = document.getElementById('just_a_download_labels');
+	just_a_download_labels.href='/static/sv_imgs/labels/'+nm
+	const just_a_download_image = document.getElementById('just_a_download_image');
+	just_a_download_image.href='/static/sv_imgs/'+$(this).text()
+	
+	$('#just_a_download_image').css('display','inline-block')
+	$('#just_a_download_labels').css('display','inline-block')
+}
+)
+
+$('.notification-title2').click(
+function() {
+
+	nm=$(this).text()
+	const just_a_download_archive = document.getElementById('just_a_download_archive');
+	just_a_download_archive.href='/static/sv_archive/'+nm+'.zip'
+	const just_a_download_archive_lbls = document.getElementById('just_a_download_archive_lbls');
+	just_a_download_archive_lbls.href='/static/sv_archive/'+nm+'_labels.zip'
+	
+	$('#just_a_download_archive').css('display','inline-block')
+	$('#just_a_download_archive_lbls').css('display','inline-block')
+}
+)
+</script>
+
+<script>
+jQuery.fn.outerHTML = function(s) {
+        return s
+            ? this.before(s).remove()
+            : jQuery("<p>").append(this.eq(0).clone()).html();
+    };
+    
+txt='<form method="post"  enctype="multipart/form-data" id="uploadForm">'
+txt+=$('input:first').outerHTML()
+txt+='<div class="file-input-container">'
+txt+='<input type="file" name="upload" class="file-input" id="id_upload"><label for="fileInput" class="file-label" z-index="120">Выбрать фото</label>'
+txt+='</div>'
+txt+='<div class="file-input-container2">'
+txt+='<input id="final_input" class="file-input2" type="submit" value="Подтвердить"><label for="fileInput2" class="file-label2" z-index="120">Загрузить фото</label>'
+txt+='</div>'
+txt+='</form>'
+
+txt+='<div id="loadingSpinner"></div>'
+
+$('.inp_form').html(txt)
+
+txt='<form method="post"  enctype="multipart/form-data" id="uploadForm2">'
+txt+=$('input:first').outerHTML()
+txt+='<div class="file-input-container">'
+txt+='<input type="file" name="upload" class="file-input" id="id_upload"><label for="fileInput" class="file-label" z-index="120">Выбрать архив</label>'
+txt+='</div>'
+txt+='<div class="file-input-container2">'
+txt+='<input id="final_input" class="file-input2" type="submit" value="Подтвердить"><label for="fileInput2" class="file-label2" z-index="120">Загрузить архив</label>'
+txt+='</div>'
+txt+='</form>'
+
+txt+='<div id="loadingSpinner2"></div>'
+
+$('.inp_form2').html(txt)
+    
+</script>
+
+<script>
+$('#just_a_download_image').css('display','none')
+$('#just_a_download_labels').css('display','none')
+$('#just_a_download_archive').css('display','none')
+$('#just_a_download_archive_lbls').css('display','none')
+</script>
+
+</html>

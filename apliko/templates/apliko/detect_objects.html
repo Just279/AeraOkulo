@@ -1,0 +1,18 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOLO Object Detection</title>
+</head>
+<body>
+    <h1>YOLO Object Detection</h1>
+    <img id="video" width="640" height="480" src="{% url 'detect_objects' %}" alt="YOLO Object Detection Stream">
+
+    <script>
+        // JavaScript здесь не нужен, т.к. <img> будет автоматически обновляться.
+    </script>
+</body>
+</html>

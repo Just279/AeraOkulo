@@ -1,0 +1,9 @@
+apt install docker.io    
+
+
+
+
+docker load -i vzor.tar
+docker-compose up --build
+
+

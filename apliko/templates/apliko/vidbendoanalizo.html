@@ -1,0 +1,338 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VZoR</title>
+    <link rel="stylesheet" href="{% static 'apply/style_vid3.css' %}">
+    <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'apply/plyr-master/dist/plyr.css' %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    
+    <style>
+        #loadingSpinner {
+            display: none;
+            border: 8px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 8px solid #3498db;
+            width: 60px;
+            height: 60px;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            margin-left: -30px;
+            margin-top: -30px;
+        }
+
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
+</head>
+<body>
+{% csrf_token %}
+
+  <a href="#popUp" id="openPopUp" class="text"><b class="bbb">Обработанные видео</b></a>
+
+<div id="notificationSidebar" class="sidebar">
+    <ul class="notif_ul">
+        {% for vid in vids %}
+        {% if vid.name is not None %}
+        <li>
+            <span class="notification-title">{{vid.name}}</span> 
+
+            <p class="notification-text">{{vid.in_process}} [{{vid.time}}]</p>
+        </li>
+        {% endif %}
+	{% endfor %}
+    </ul>
+</div>
+  
+
+      	
+      
+   </div>        
+   <a href="" class="closePopUpOutSide"></a>    
+</aside>
+    <img src="{% static 'image/name.png' %}" class="title1">
+    <nav>
+        <ul>
+          <li>
+            <a href="/apliko/">План аэропорта</a>
+          </li>
+          <li>
+            <a href="/fotoanalizo/">Фото анализ</a>
+          </li>
+          <li>
+            <a href="/vidbendoanalizo/">Видео анализ</a>
+          </li>
+          <li>
+            <a href="/logout/">Выход</a>
+          </li>
+        </ul>
+      </nav>
+      
+      <div class="image-container">   
+
+        <div id="videoContainer">
+            <video id="videoPlayer" playsinline controls>
+                <source id="videoSource" src="" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+      </div>
+      
+      
+      
+      <div id="openPopUp2" class="inp_form">
+        <form method="post" enctype="multipart/form-data" id="uploadForm">
+			
+			{{ form.as_p }}
+			<input id="final_input" type="submit" value="Подтвердить">
+		</form>
+		<div id="loadingSpinner"></div>
+	  </div>   
+      <a id="openPopUp1" href="/static/sv_imgs/labels/images_d3Qfg32.txt" download><b class="bbb">Скачать Видео</b></a>
+
+
+
+      <div id="nav-bar">
+     
+        
+        <div id="nav-header"><a id="nav-title" target="_blank"><b class="bbb">Обнаруженные объекты</b></a>
+         
+          <hr/>
+          
+          
+        </div>
+        <div id='nav-content'>
+      
+      </div>
+      
+      </div>
+        
+        <div class="notification-bell-container">
+          <div class="notification-bell"><i class="fa fa-bell-o fa-lg"></i>
+              <span class="notification-count">20</span>
+          </div>
+          <div class="notification-dropdown">
+              <ul class="notification-dropdown-ul">
+              {% for mes in mess %}
+              {% if mes.is_new3 is  None%}
+			<li class="text">{{mes.name}}</li>
+		{% endif %}
+		{% endfor %}
+              </ul>
+          </div>
+        </div>
+        	
+                    
+</body>
+<script src="{% static 'apply/jquery-3.7.1.min.js' %}"></script>
+<script src="{% static 'apply/script_vid2.js' %}"></script>
+<script src="{% static 'apply/plyr-master/dist/plyr.js' %}"></script>
+
+<script>
+    const player = new Plyr('#videoPlayer');
+    
+    player.on('timeupdate', (event) => {
+        const currentTime = player.currentTime;
+
+        if (currentTime >= 10 && currentTime <= 20) {
+            console.log('Метка 1');
+        } else if (currentTime >= 60 && currentTime <= 70) {
+            console.log('Метка 2');
+        } else if (currentTime >= 150 && currentTime <= 160) {
+            console.log('Метка 3');
+        }
+    });
+
+</script>
+
+
+
+
+
+<script>
+        $(document).ready(function(){
+            $('#uploadForm').on('submit', function(event){
+                event.preventDefault();
+
+                var formData = new FormData(this);
+
+                $('#loadingSpinner').show();  // Show the spinner
+                
+                $.ajax({
+                    url: "/vidbendoanalizo/",
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(data){
+                        $('#loadingSpinner').hide();  // Hide the spinner
+                        if(data.status === 'success'){
+                        	//const just_a_download_video = document.getElementById('just_a_download_video');
+				//just_a_download_video.href='/static/sv_video/'+data['leporo']
+                        	//const videoPlayer = document.getElementById('videoPlayer');
+                        	//videoPlayer.src='/static/sv_video/'+data['leporo'];
+                        	st2=$('.notif_ul').html()
+                        	st='<li><span class="notification-title">'+data['new_data'][0]+'</span><p class="notification-text">[в обработке]</p><p class="notification-text">['+data['new_data'][1]+']</p></li>'
+                        	$('.notif_ul').html(st+st2)
+                        	$('.notification-title').click(
+					function() {
+						th_txt=$(this).text()
+						const just_a_download_video = document.getElementById('openPopUp1');
+						just_a_download_video.href='/static/sv_video/'+th_txt+'.mp4'
+						const videoPlayer = document.getElementById('videoPlayer');
+						videoPlayer.src='/static/sv_video/'+th_txt+'.mp4';
+						
+						
+						player.on('loadedmetadata', function() {
+					    	duration = player.duration;
+					 
+					    	$.ajax({
+						    url: '/vidbendoanalizo/',     
+						    method: 'get',              
+						    data: {text: th_txt},     
+						    success: function(data){
+						    		txt=''
+								r=data['result']
+								a=0
+								while (a<r.length) {
+								arr=r[a]
+								b=1
+								txt_d=r[a][0]
+								while (b<r[a].length) {
+								sec=Math.floor(r[a][b][0]*duration)
+								sec2=Math.floor(r[a][b][1]*duration)
+								txt+='<div class="nav-button"><p><b>'+sec+'</b>s. --> '+sec2+'s.: '+txt_d+'</p></div>'
+								b++
+								}
+								a++
+								}
+								$('#nav-content').html(txt)
+								
+								$('.nav-button').click(
+										function() {
+											ttxt=$(this).html()
+											ttxt=ttxt.slice(ttxt.indexOf('<b>')+3,ttxt.indexOf('</b>'))
+											player.currentTime =Number(ttxt)
+										}
+										)
+						    }
+						});
+						
+						
+						});
+					$('#openPopUp1').css('display','inline-block')	
+					}
+					)
+                        } else {
+                            alert('Error: ' + JSON.stringify(data.errors));
+                        }
+                    },
+                    error: function(xhr, status, error){
+                        $('#loadingSpinner').hide();  // Hide the spinner
+                        alert('An error occurred: ' + error);
+                    }
+                });
+            });
+        });
+    </script>
+
+
+<script>
+$('.notification-title').click(
+function() {
+	th_txt=$(this).text()
+	const just_a_download_video = document.getElementById('openPopUp1');
+	just_a_download_video.href='/static/sv_video/'+th_txt+'.mp4'
+	const videoPlayer = document.getElementById('videoPlayer');
+	videoPlayer.src='/static/sv_video/'+th_txt+'.mp4';
+	
+	
+	player.on('loadedmetadata', function() {
+    	duration = player.duration;
+ 
+    	$.ajax({
+	    url: '/vidbendoanalizo/',     
+	    method: 'get',              
+	    data: {text: th_txt},     
+	    success: function(data){
+	    		txt=''
+			r=data['result']
+			a=0
+			while (a<r.length) {
+			arr=r[a]
+			b=1
+			txt_d=r[a][0]
+			while (b<r[a].length) {
+			sec=Math.floor(r[a][b][0]*duration)
+			sec2=Math.floor(r[a][b][1]*duration)
+			txt+='<div class="nav-button"><p><b>'+sec+'</b>s. --> '+sec2+'s.: '+txt_d+'</p></div>'
+			b++
+			}
+			a++
+			}
+			$('#nav-content').html(txt)
+			
+			$('.nav-button').click(
+					function() {
+						ttxt=$(this).html()
+						ttxt=ttxt.slice(ttxt.indexOf('<b>')+3,ttxt.indexOf('</b>'))
+						player.currentTime =Number(ttxt)
+					}
+					)
+	    }
+	});
+	
+	
+	});
+$('#openPopUp1').css('display','inline-block')	
+}
+)
+</script>
+
+<script>
+jQuery.fn.outerHTML = function(s) {
+        return s
+            ? this.before(s).remove()
+            : jQuery("<p>").append(this.eq(0).clone()).html();
+    };
+    
+txt='<form method="post"  enctype="multipart/form-data" id="uploadForm">'
+txt+=$('input:first').outerHTML()
+txt+='<div class="file-input-container">'
+txt+='<input type="file" name="upload" class="file-input" id="id_upload" value="Выбрать видео"><label for="fileInput" class="file-label" z-index="120">Выбрать видео</label>'
+txt+='</div>'
+txt+='<div class="file-input-container2">'
+txt+='<input id="final_input" class="file-input2" type="submit" value="Подтвердить"><label for="fileInput2" class="file-label2" z-index="120">Загрузить видео</label>'
+txt+='</div>'
+txt+='</form>'
+
+txt+='<div id="loadingSpinner"></div>'
+
+$('.inp_form').html(txt)
+    
+</script>
+
+
+<script>
+$('#openPopUp1').css('display','none')
+</script>
+
+
+</html>

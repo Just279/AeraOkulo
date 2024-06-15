@@ -1,0 +1,266 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VZoR</title>
+    <link rel="stylesheet" href="{% static 'apply/style_index.css' %}">
+    <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <a id="openPopUp" class="text"><b class="bbb">История уведомлений</b></a>
+  <a href="redactor.html" id="openPopUp1" class="text"><b class="bbb">    Изменить камеры    </b></a>
+<div id="notificationSidebar" class="sidebar">
+    <ul>
+	{% for mes in mess %}
+        <li>
+            <span class="notification-title">{{mes.name}}</span>
+            <p class="notification-text">[{{mes.time}}]</p>
+            <p class="notification-text">{{mes.description}}</p>
+        </li>
+	{% endfor %}
+    </ul>
+</div>  
+   </div>        
+   <a href="#!" class="closePopUpOutSide"></a>    
+</aside>
+    <img src="{% static 'image/name.png' %}" class="title1">
+    <nav>
+        <ul>
+          <li>
+            <a href="/apliko/">План аэропорта</a>
+          </li>
+          <li>
+            <a href="/fotoanalizo/">Фото анализ</a>
+          </li>
+          <li>
+            <a href="/vidbendoanalizo/">Видео анализ</a>
+          </li>
+          <li>
+            <a href="/logout/">Выход</a>
+          </li>
+        </ul>
+      </nav>
+         <div class="image-container">
+          <canvas id="myCanvas" width="1280" height="720"></canvas>
+          <img id="cameraIcon1" class="camera-icon" src="{% static 'image/camera-icon.png' %}" alt="Camera Icon1" title="Участок №1">
+          <img id="cameraIcon2" class="camera-icon" src="{% static 'image/camera-icon.png' %}" alt="Camera Icon2" title="Участок №2">
+          <img id="cameraIcon3" class="camera-icon" src="{% static 'image/camera-icon.png' %}" alt="Camera Icon3" title="Участок №3">
+        </div>
+      </div>
+      <div id="nav-bar">
+        <input id="nav-toggle" type="checkbox"/>
+        <div id="nav-header"><a id="nav-title" href="https://codepen.io" target="_blank"><i class="fab fa-codepen"></i>Камеры</a>
+          <label for="nav-toggle"><span id="nav-toggle-burger"></span></label>
+          <hr/>
+        </div>
+        <div id="nav-content">
+        {% for fot in fots %}
+        <div>
+          <a id="openCamera" class="nav-button">
+            <i class="fa fa-video-camera fa-lg"></i>
+            <span>{{fot.name}} ㅤ</span>
+            <b><p>{{fot.location}}</p></b>
+          </a>       
+          <div id="camera" class="camera">
+            <div class="camera-content">
+              <span id="closeCamera" class="close">&times;</span>
+              <img id="video" width="640" height="480" alt="YOLO Object Detection Stream">
+            </div>
+          </div>
+        </div>
+    {% endfor %}            
+        </div>
+        <div class="notification-bell-container">
+          <div class="notification-bell"><i class="fa fa-bell-o fa-lg"></i>
+              <span class="notification-count">20</span>
+          </div>
+          <div class="notification-dropdown">
+              <ul class="notification-dropdown-ul">
+              {% for mes in mess %}
+              {% if mes.is_new3 is  None%}
+			<li class="text">{{mes.name}}></li>
+		{% endif %}
+		{% endfor %}
+              </ul>
+          </div>
+      </div>             
+</body>
+<script src="{% static 'apply/script_index2.js' %}"></script>
+<script src="{% static 'apply/jquery-3.7.1.min.js' %}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+  var cameraIcons = document.querySelectorAll('.camera-icon');
+  var video = document.getElementById('video');
+
+  cameraIcons.forEach(function(icon) {
+    icon.addEventListener('click', function() {
+      video.src = "{% url 'detect_objects' %}";
+    });
+  });
+
+  var closeCameraBtn = document.getElementById('closeCamera');
+  closeCameraBtn.addEventListener('click', function() {
+    video.removeAttribute('src');
+  });
+});
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+  var openCameraBtn = document.getElementById('openCamera');
+  var closeCameraBtn = document.getElementById('closeCamera');
+  
+  var video = document.getElementById('video');
+
+  openCameraBtn.addEventListener('click', function() {
+    video.src = "{% url 'detect_objects' %}";
+  });
+
+  closeCameraBtn.addEventListener('click', function() {
+    video.removeAttribute('src');
+  });
+
+
+document.addEventListener('click', function(event) {
+    if (!camera.contains(event.target) && !openCameraBtn.contains(event.target)) {
+      video.removeAttribute('src');
+      camera.classList.remove('active');
+    }
+  });
+});
+
+</script>
+
+  <script>
+const canvas = document.getElementById('myCanvas');
+const ctx = canvas.getContext('2d');
+const cameraIcons = [
+    document.getElementById('cameraIcon1'),
+    document.getElementById('cameraIcon2'),
+    document.getElementById('cameraIcon3')
+];
+
+const iconPositions = [
+    { x: 260, y: 125 },
+    { x: 715, y: 580 },
+    { x: 840, y: 215 }
+];
+
+const lineAngles = [
+    { angle1: 105, angle2: 35 },  
+    { angle1: 35, angle2: -40 }, 
+    { angle1: 30, angle2: -40 }   
+];
+
+const mainImage = new Image();
+mainImage.src = "{% static 'image/aircraft.png' %}";
+mainImage.onload = function() {
+    ctx.drawImage(mainImage, 0, 0, canvas.width, canvas.height);
+    cameraIcons.forEach((icon, index) => {
+        icon.style.left = iconPositions[index].x + 'px';
+        icon.style.top = iconPositions[index].y + 'px';
+        icon.style.display = 'block';
+    });
+};
+
+cameraIcons[0].addEventListener('click', function() {
+  document.getElementById('camera').style.display = 'block';
+});
+cameraIcons[1].addEventListener('click', function() {
+  document.getElementById('camera').style.display = 'block';
+});
+cameraIcons[2].addEventListener('click', function() {
+  document.getElementById('camera').style.display = 'block';
+});
+ function drawLines(x, y, angle1, angle2) {
+    const length = 500;  
+    const gradient1 = ctx.createLinearGradient(x, y, x + length * Math.cos(angle1 * Math.PI / 180), y + length * Math.sin(angle1 * Math.PI / 180));
+    gradient1.addColorStop(0, 'red');
+    gradient1.addColorStop(1, 'rgba(255, 0, 0, 0)');
+
+    const gradient2 = ctx.createLinearGradient(x, y, x + length * Math.cos(angle2 * Math.PI / 180), y + length * Math.sin(angle2 * Math.PI / 180));
+    gradient2.addColorStop(0, 'red');
+    gradient2.addColorStop(1, 'rgba(255, 0, 0, 0)');
+
+    ctx.lineWidth = 2;
+
+    ctx.strokeStyle = gradient1;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + length * Math.cos(angle1 * Math.PI / 180), y + length * Math.sin(angle1 * Math.PI / 180));
+    ctx.stroke();
+
+    ctx.strokeStyle = gradient2;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + length * Math.cos(angle2 * Math.PI / 180), y + length * Math.sin(angle2 * Math.PI / 180));
+    ctx.stroke();
+}
+
+function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(mainImage, 0, 0, canvas.width, canvas.height);
+}
+
+cameraIcons.forEach((icon, index) => {
+    icon.addEventListener('mouseover', function() {
+        clearCanvas();
+        drawLines(iconPositions[index].x + 15, iconPositions[index].y + 15, lineAngles[index].angle1, lineAngles[index].angle2);  
+    });
+
+    icon.addEventListener('mouseout', function() {
+        clearCanvas();
+    });
+
+    
+});
+
+
+
+document.getElementById('openCamera').addEventListener('click', function() {
+    document.getElementById('camera').style.display = 'block';
+});
+
+
+document.getElementById('closeCamera').addEventListener('click', function() {
+    document.getElementById('camera').style.display = 'none';
+});
+
+window.addEventListener('click', function(event) {
+    if (event.target == document.getElementById('camera')) {
+        document.getElementById('camera').style.display = 'none';
+    }
+});
+    
+
+  </script>
+  
+  
+<script>
+function myajax() {
+$.ajax({
+	    url: '/apliko/',     
+	    method: 'get',              
+	    data: {text: '?'},     
+	    success: function(data){
+	    		const notificationCountElement = document.querySelector('.notification-count');
+			r=data['result']
+			$('.notification-dropdown-ul').html(r)
+			$('.notification-count').html(data['ln'])
+			if (data['ln']==0) {notificationCountElement.style.display = 'none'} else {notificationCountElement.style.display = 'block'}
+	    }
+	});
+}
+
+setInterval(
+  () => myajax(),
+  5000
+);
+</script>
+
+</html>
