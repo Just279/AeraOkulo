@@ -6,9 +6,9 @@
 
 1. Необходимо в командной строке linux установить следующее:
 
-apt install ffmpeg 
+[apt install ffmpeg] 
 
-pip install ultralytics Django Pillow numpy opencv-python
+[pip install ultralytics Django Pillow numpy opencv-python]
 
 2. Далее прописать следующие команды в папке с веб-сервисом:
 
