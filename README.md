@@ -6,13 +6,13 @@
 
 Необходимо в командной строке linux установить следующее:
 
-apt install ffmpeg
+apt install ffmpeg /n
 pip install ultralytics Django Pillow numpy opencv-python
 
 Далее прописать следующие команды в папке с веб-сервисом:
 
-python manage.py makemigrations
-python manage.py migrate
-python manage.py runserver 127.0.0.1:80
+python manage.py makemigrations /n
+python manage.py migrate /n
+python manage.py runserver 127.0.0.1:80 /n
 
 После этого веб-сервис должен запуститься без ошибок. При возникновении ошибок в консоли, доустановить необходимые пакеты в зависимости от того какая библиотека отсутсвует указанная в ошибке. (Хотя этого произойти не должно)
