@@ -3,7 +3,8 @@ apt install docker.io
 
 
 
-docker load -i vzor.tar
-docker-compose up --build
+docker load -i Vzor.tar
+docker run -p 8000:8000 vzor:latest
+
 
 
