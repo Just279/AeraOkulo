@@ -1,0 +1,12 @@
+
+path: C:\archive\Z\data  # dataset root dir
+train: images/train  # train images (relative to 'path')
+val: images/val  # val images (relative to 'path')
+
+# Classes
+names:
+  0: drone!
+  1: plane
+  2: helicopter
+  3: bird
+  4: p-drone!!!
