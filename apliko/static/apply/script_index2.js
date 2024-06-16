@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Initialize the notification count on page load
+    
     updateNotificationCount();
 });
 
