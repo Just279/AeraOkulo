@@ -1,4 +1,4 @@
-<img src="[AeraOkulo_files/image_UvlCKHU.jpg](https://github.com/Just279/AeraOkulo/blob/main/apliko/static/image/logo.png)">
+<img src="[](https://github.com/Just279/AeraOkulo/blob/main/apliko/static/image/logo.png)">
  Веб-сервис для мониторинга воздушного пространства
 Создан исключительно для систем под архитектурой linux **(Ubuntu, Kali linux, Debian)**
 
